@@ -46,41 +46,40 @@ module fpga_entropy_core(
 
                          output wire [31 : 0] rnd
                         );
-  
-  //----------------------------------------------------------------
-  // Internal constant and parameter definitions.
-  //----------------------------------------------------------------
 
   
   //----------------------------------------------------------------
   // Registers including update variables and write enable.
   //----------------------------------------------------------------
   reg [31 : 0] shift_reg;
-  reg          shift_we;
-
   reg [31 : 0] rnd_reg;
-  reg          rnd_we;
-
   reg [4 : 0]  bit_ctr_reg;
-  reg          bit_ctr_inc;
-  reg          bit_ctr_we;
 
   
   //----------------------------------------------------------------
   // Wires.
   //----------------------------------------------------------------
+  wire l5d;
+  wire l7d;
+  wire l13d;
+  wire l41d;
+  wire l43d;
   
   
   //----------------------------------------------------------------
   // Concurrent connectivity for ports etc.
   //----------------------------------------------------------------
-  assign rnd_bit = l5d ^ l7d ^ l13d ^ l41d ^ l43d;
   assign rnd     = rnd_reg;
   
              
   //----------------------------------------------------------------
   // module instantiations.
   //----------------------------------------------------------------
+  loop5   l5(.ctrl(init), .seed(seed), .d(l5d));
+  loop7   l7(.ctrl(init), .seed(seed), .d(l7d));
+  loop13 l13(.ctrl(init), .seed(seed), .d(l13d));
+  loop41 l41(.ctrl(init), .seed(seed), .d(l41d));
+  loop43 l43(.ctrl(init), .seed(seed), .d(l43d));
   
   
   //----------------------------------------------------------------
@@ -100,29 +99,16 @@ module fpga_entropy_core(
         end
       else
         begin
-          shift_reg <= {shift_reg[6 : 0], rnd};
+          shift_reg <= {shift_reg[6 : 0], l5d ^ l7d ^ l13d ^ l41d ^ l43d};
+
+          bit_ctr_reg <= bit_ctr_reg + 1'b1;
           
-          if (rnd_new)
+          if (bit_ctr_reg == 5'bfffff)
             begin
               rnd_reg <= shift_reg;
             end
         end
     end // reg_update
-
-
-  //----------------------------------------------------------------
-  //----------------------------------------------------------------
-  always @*
-    begin : bit_ctr
-      rnd_we  = 0;
-      
-      bit_ctr_reg <= bit_ctr_reg + 1'b1;
-
-      if (bit_ctr_reg == 5'bfffff)
-        begin
-          rnd_we = 1;
-        end
-    end // bit_ctr
   
 endmodule // fpga_entropy_core
 
