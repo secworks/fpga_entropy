@@ -48,20 +48,20 @@ module loop13(
   inv1 i11(.s(s11), .d(d11));
   inv1 i12(.s(s12), .d(d12));
 
-  assign s00 = ctrl ? seed : d12;
-  assign s01 = ctrl ? seed : d00;
-  assign s02 = ctrl ? seed : d01;
-  assign s03 = ctrl ? seed : d02;
-  assign s04 = ctrl ? seed : d03;
-  assign s05 = ctrl ? seed : d04;
-  assign s06 = ctrl ? seed : d05;
-  assign s07 = ctrl ? seed : d06;
-  assign s08 = ctrl ? seed : d07;
-  assign s09 = ctrl ? seed : d08;
+  assign s00 = ctrl ? ~seed : d12;
+  assign s01 = ctrl ?  seed : d00;
+  assign s02 = ctrl ?  seed : d01;
+  assign s03 = ctrl ?  seed : d02;
+  assign s04 = ctrl ?  seed : d03;
+  assign s05 = ctrl ?  seed : d04;
+  assign s06 = ctrl ?  seed : d05;
+  assign s07 = ctrl ?  seed : d06;
+  assign s08 = ctrl ?  seed : d07;
+  assign s09 = ctrl ?  seed : d08;
 
-  assign s10 = ctrl ? seed : d09;
-  assign s11 = ctrl ? seed : d10;
-  assign s12 = ctrl ? seed : d11;
+  assign s10 = ctrl ?  seed : d09;
+  assign s11 = ctrl ?  seed : d10;
+  assign s12 = ctrl ?  seed : d11;
   
   assign d = d12;
   

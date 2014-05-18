@@ -23,11 +23,11 @@ module loop5(
   inv1 i03(.s(s03), .d(d03));
   inv1 i04(.s(s04), .d(d04));
 
-  assign s00 = ctrl ? seed : d04;
-  assign s01 = ctrl ? seed : d00;
-  assign s02 = ctrl ? seed : d01;
-  assign s03 = ctrl ? seed : d02;
-  assign s04 = ctrl ? seed : d03;
+  assign s00 = ctrl ? ~seed : d04;
+  assign s01 = ctrl ?  seed : d00;
+  assign s02 = ctrl ?  seed : d01;
+  assign s03 = ctrl ?  seed : d02;
+  assign s04 = ctrl ?  seed : d03;
   
   assign d = d04;
   

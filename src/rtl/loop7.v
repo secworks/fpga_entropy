@@ -29,13 +29,13 @@ module loop7(
   inv1 i05(.s(s05), .d(d05));
   inv1 i06(.s(s06), .d(d06));
 
-  assign s00 = ctrl ? seed : d06;
-  assign s01 = ctrl ? seed : d00;
-  assign s02 = ctrl ? seed : d01;
-  assign s03 = ctrl ? seed : d02;
-  assign s04 = ctrl ? seed : d03;
-  assign s05 = ctrl ? seed : d04;
-  assign s06 = ctrl ? seed : d05;
+  assign s00 = ctrl ? ~seed : d06;
+  assign s01 = ctrl ?  seed : d00;
+  assign s02 = ctrl ?  seed : d01;
+  assign s03 = ctrl ?  seed : d02;
+  assign s04 = ctrl ?  seed : d03;
+  assign s05 = ctrl ?  seed : d04;
+  assign s06 = ctrl ?  seed : d05;
   
   assign d = d06;
   
