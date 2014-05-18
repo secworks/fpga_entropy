@@ -42,6 +42,7 @@ module fpga_entropy_core(
                          input wire           reset_n,
 
                          input wire           init,
+                         input wire           update,
                          output wire          seed,
 
                          output wire [31 : 0] rnd
@@ -95,13 +96,15 @@ module fpga_entropy_core(
         begin
           shift_reg   <= 32'h00000000;
           rnd_reg     <= 32'h00000000;
-          bit_ctr_reg <= 5'b00000;
+          bit_ctr_reg <= 5'h00;
         end
       else
         begin
-          shift_reg <= {shift_reg[6 : 0], l5d ^ l7d ^ l13d ^ l41d ^ l43d};
-
-          bit_ctr_reg <= bit_ctr_reg + 1'b1;
+          if (update)
+            begin
+              shift_reg   <= {shift_reg[30 : 0], l5d ^ l7d ^ l13d ^ l41d ^ l43d};
+              bit_ctr_reg <= bit_ctr_reg + 1'b1;
+            end
           
           if (bit_ctr_reg == 5'h1f)
             begin
