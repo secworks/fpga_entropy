@@ -43,7 +43,7 @@ module fpga_entropy_core(
 
                          input wire           init,
                          input wire           update,
-                         output wire          seed,
+                         input wire           seed,
 
                          output wire [31 : 0] rnd
                         );

@@ -57,6 +57,10 @@ module tb_fpga_entropy();
   //----------------------------------------------------------------
   // Register and Wire declarations.
   //----------------------------------------------------------------
+  reg [31 : 0]  cycle_ctr;
+  reg [31 : 0]  error_ctr;
+  reg [31 : 0]  tc_ctr;
+
   reg           tb_clk;
   reg           tb_reset_n;
   reg           tb_init;
@@ -68,7 +72,7 @@ module tb_fpga_entropy();
   //----------------------------------------------------------------
   // Device Under Test.
   //----------------------------------------------------------------
-  fpga_entropy_core dit(
+  fpga_entropy_core dut(
                         // Clock and reset.
                         .clk(),
                         .reset_n(),
@@ -125,17 +129,17 @@ module tb_fpga_entropy();
       $display("State of DUT");
       $display("------------");
       $display("Inputs and outputs:");
-      $display("init = 0x%01x, update = 0x%01x, seed = 0x%01x"
+      $display("init = 0x%01x, update = 0x%01x, seed = 0x%01x",
                tb_init, tb_update, tb_seed);
       $display("rnd= 0x%08x", tb_rnd);
       $display("");
         
       $display("Internal values:");
       $display("shift_reg = 0x%08x, rnd_reg = 0x%08x, bit_ctr_reg = 0x%02x",
-               dut.shift_reg, dut.rnd_reg, dut.bit_ctr_reg)
+               dut.shift_reg, dut.rnd_reg, dut.bit_ctr_reg);
 
-      $display("l5d= 0x%01x, l7d = 0x%01x, l13d = 0x%01x, l41d = 0x01x, l43d = 0x%01x",
-               dut.l5d, dut.l7d, dut.l13d, dut.l41d, dut.l43d)
+      $display("l5d = 0x%01x, l7d = 0x%01x, l13d = 0x%01x, l41d = 0x01x, l43d = 0x%01x",
+               dut.l5d, dut.l7d, dut.l13d, dut.l41d, dut.l43d);
       $display("");
     end
   endtask // dump_dut_state
