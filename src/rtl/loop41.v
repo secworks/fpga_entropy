@@ -141,7 +141,7 @@ module loop41(
   inv1 i38(.s(s38), .d(d38));
   inv1 i39(.s(s39), .d(d39));
 
-  inv1 i00(.s(s40), .d(d40));
+  inv1 i40(.s(s40), .d(d40));
 
   assign s00 = ctrl ? seed : d40;
   assign s01 = ctrl ? seed : d00;
