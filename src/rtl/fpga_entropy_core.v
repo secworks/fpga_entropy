@@ -103,7 +103,7 @@ module fpga_entropy_core(
 
           bit_ctr_reg <= bit_ctr_reg + 1'b1;
           
-          if (bit_ctr_reg == 5'bfffff)
+          if (bit_ctr_reg == 5'h1f)
             begin
               rnd_reg <= shift_reg;
             end
