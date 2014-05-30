@@ -37,7 +37,7 @@
 //
 //======================================================================
 
-module bp_osc #(parameter WIDTH = 2)
+module bp_osc #(parameter WIDTH = 8)
              (
               input wire               clk,
               input wire               reset_n,
