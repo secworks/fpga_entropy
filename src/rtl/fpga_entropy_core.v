@@ -41,9 +41,8 @@ module fpga_entropy_core(
                          input wire           clk,
                          input wire           reset_n,
 
-                         input wire           init,
+                         input wire [31 : 0]  init_value,
                          input wire           update,
-                         input wire           seed,
 
                          output wire [31 : 0] rnd
                         );
@@ -60,27 +59,67 @@ module fpga_entropy_core(
   //----------------------------------------------------------------
   // Wires.
   //----------------------------------------------------------------
-  wire l5d;
-  wire l7d;
-  wire l13d;
-  wire l41d;
-  wire l43d;
-  
+  wire dout02;
+  wire dout03;
+  wire dout07;
+  wire dout13;
+  wire dout41;
+  wire dout43;
+
+  wire [31 : 0] inv_init_value;
+
   
   //----------------------------------------------------------------
   // Concurrent connectivity for ports etc.
   //----------------------------------------------------------------
-  assign rnd     = rnd_reg;
+  assign rnd            = rnd_reg;
+  assign inv_init_value = ~init_value;
   
              
   //----------------------------------------------------------------
   // module instantiations.
   //----------------------------------------------------------------
-  loop5   l5(.ctrl(init), .seed(seed), .d(l5d));
-  loop7   l7(.ctrl(init), .seed(seed), .d(l7d));
-  loop13 l13(.ctrl(init), .seed(seed), .d(l13d));
-  loop41 l41(.ctrl(init), .seed(seed), .d(l41d));
-  loop43 l43(.ctrl(init), .seed(seed), .d(l43d));
+  bp_osc #(.WIDTH(2)) osc02(.clk(clk),
+                            .reset_n(reset_n),
+                            .opa(init_value[1 : 0]),
+                            .opb(inv_init_value[1 : 0]),
+                            .dout(dout02)
+                           );
+
+  bp_osc #(.WIDTH(3)) osc03(.clk(clk),
+                            .reset_n(reset_n),
+                            .opa(init_value[2 : 0]),
+                            .opb(inv_init_value[2 : 0]),
+                            .dout(dout03)
+                           );
+
+  bp_osc #(.WIDTH(7)) osc07(.clk(clk), 
+                            .reset_n(reset_n),
+                            .opa(init_value[6 : 0]),
+                            .opb(inv_init_value[6 : 0]),
+                            .dout(dout07)
+                            );
+
+  bp_osc #(.WIDTH(13)) osc13(.clk(clk),
+                             .reset_n(reset_n),
+                             .opa(init_value[12 : 0]),
+                             .opb(inv_init_value[12 : 0]),
+                             .dout(dout13)
+                            );
+
+  bp_osc #(.WIDTH(41)) osc41(.clk(clk),
+                             .reset_n(reset_n),
+                             .opa({init_value[8 : 0], init_value[31 : 0]}),
+                             .opb({inv_init_value[8 : 0], inv_init_value[31 : 0]}),
+                             .dout(dout41)
+                            );
+
+  bp_osc #(.WIDTH(43) osc43(.clk(clk),
+                            .reset_n(reset_n),
+                            .opa({init_value[11 : 0], init_value[31 : 0]}), 
+                            .opb({inv_init_value[11 : 0], inv_init_value[31 : 0]}),
+                            .dout(dout43)
+                           );
   
   
   //----------------------------------------------------------------
@@ -102,7 +141,7 @@ module fpga_entropy_core(
         begin
           if (update)
             begin
-              shift_reg   <= {shift_reg[30 : 0], l5d ^ l7d ^ l13d ^ l41d ^ l43d};
+              shift_reg   <= {shift_reg[30 : 0], dout02 ^ dout03 ^ dout07 ^ dout13 ^ dout41 ^ dout43};
               bit_ctr_reg <= bit_ctr_reg + 1'b1;
             end
           
