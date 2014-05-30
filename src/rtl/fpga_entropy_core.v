@@ -41,7 +41,8 @@ module fpga_entropy_core(
                          input wire           clk,
                          input wire           reset_n,
 
-                         input wire [31 : 0]  init_value,
+                         input wire [31 : 0]  opa,
+                         input wire [31 : 0]  opb,
                          input wire           update,
 
                          output wire [31 : 0] rnd
@@ -66,8 +67,6 @@ module fpga_entropy_core(
   wire dout41;
   wire dout43;
 
-  wire [31 : 0] inv_init_value;
-
   
   //----------------------------------------------------------------
   // Concurrent connectivity for ports etc.
@@ -81,43 +80,43 @@ module fpga_entropy_core(
   //----------------------------------------------------------------
   bp_osc #(.WIDTH(2)) osc02(.clk(clk),
                             .reset_n(reset_n),
-                            .opa(init_value[1 : 0]),
-                            .opb(inv_init_value[1 : 0]),
+                            .opa(opa[1 : 0]),
+                            .opb(opb[1 : 0]),
                             .dout(dout02)
                            );
 
   bp_osc #(.WIDTH(3)) osc03(.clk(clk),
                             .reset_n(reset_n),
-                            .opa(init_value[2 : 0]),
-                            .opb(inv_init_value[2 : 0]),
+                            .opa(opa[2 : 0]),
+                            .opb(opb[2 : 0]),
                             .dout(dout03)
                            );
 
   bp_osc #(.WIDTH(7)) osc07(.clk(clk), 
                             .reset_n(reset_n),
-                            .opa(init_value[6 : 0]),
-                            .opb(inv_init_value[6 : 0]),
+                            .opa(opa[6 : 0]),
+                            .opb(opb[6 : 0]),
                             .dout(dout07)
                             );
 
   bp_osc #(.WIDTH(13)) osc13(.clk(clk),
                              .reset_n(reset_n),
-                             .opa(init_value[12 : 0]),
-                             .opb(inv_init_value[12 : 0]),
+                             .opa(opa[12 : 0]),
+                             .opb(opb[12 : 0]),
                              .dout(dout13)
                             );
 
   bp_osc #(.WIDTH(41)) osc41(.clk(clk),
                              .reset_n(reset_n),
-                             .opa({init_value[8 : 0], init_value[31 : 0]}),
-                             .opb({inv_init_value[8 : 0], inv_init_value[31 : 0]}),
+                             .opa({opa[8 : 0], opa[31 : 0]}),
+                             .opb({opb[8 : 0], opb[31 : 0]}),
                              .dout(dout41)
                             );
 
   bp_osc #(.WIDTH(43) osc43(.clk(clk),
                             .reset_n(reset_n),
-                            .opa({init_value[11 : 0], init_value[31 : 0]}), 
-                            .opb({inv_init_value[11 : 0], inv_init_value[31 : 0]}),
+                            .opa({opa[10 : 0], opa[31 : 0]}), 
+                            .opb({opb[10 : 0], opb[31 : 0]}),
                             .dout(dout43)
                            );
   
