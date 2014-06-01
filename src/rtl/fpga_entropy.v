@@ -139,9 +139,10 @@ module fpga_entropy(
     begin: reg_update
       if (!reset_n)
         begin
-          opa_reg   <= DEFAULT_OPA;
-          opb_reg   <= ~DEFAULT_OPA;
-          debug_reg <= 8'h00;
+          opa_reg    <= DEFAULT_OPA;
+          opb_reg    <= ~DEFAULT_OPA;
+          update_reg <= 1;
+          debug_reg  <= 8'h00;
         end
       else
         begin
@@ -151,6 +152,11 @@ module fpga_entropy(
             begin
               opa_reg <= opa_new;
               opb_reg <= ~opa_new;
+            end
+
+          if (update_we)
+            begin
+              update_reg <= update_we;
             end
 
           if (debug_we)
