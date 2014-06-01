@@ -66,12 +66,12 @@ module fpga_entropy(
   parameter ADDR_RND_READ     = 8'h20;
   
   // Core ID constants.
-  parameter CORE_NAME0   = 32'h75617274;  // "fpga"
-  parameter CORE_NAME1   = 32'h20202020;  // "_ent"
+  parameter CORE_NAME0   = 32'h66706761;  // "fpga"
+  parameter CORE_NAME1   = 32'h5f656e74;  // "_ent"
   parameter CORE_VERSION = 32'h302e3031;  // "0.01"
 
   // Default value assigned to operand A.
-  // Operand B will be the inverse value.
+  // Operand B will be the inverse value of operand A.
   parameter DEFAULT_OPA = 32'haaaaaaaa;
   
   // Delay in cycles between updating the debug port with
