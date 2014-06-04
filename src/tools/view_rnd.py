@@ -44,46 +44,67 @@
 # Imports.
 #-------------------------------------------------------------------
 from PIL import Image
+import math
 import random
 import argparse
 
 
 #-------------------------------------------------------------------
+# Symbolic constants.
 #-------------------------------------------------------------------
 VERSION = '0.001 Beta'
+GEN_X = 1024
+GEN_Y = 1024
 
 
 #-------------------------------------------------------------------
-# get_random_byte()
+# gen_random_bytes()
 #
-# Generate a random byte. Used for testing only.
+# Generate an array with the given number of random bytes.
+# Used for testing only.
 #-------------------------------------------------------------------
-def get_random_byte():
-    return random.randint(0,255)
+def gen_random_bytes(num_bytes, verbose):
+    values = []
 
-
-#-------------------------------------------------------------------
-#-------------------------------------------------------------------
-def old_stuff():
-    verbose = True
-    filename = "random_image.png"
     if verbose:
-        print "Generating picture %s" % filename
-    x_size = 1024
-    y_size = 1024
-    
-    im = Image.new("RGB", (x_size, y_size))
+        print "Generating %d random values." % num_bytes
 
-    random_data = []
-    for i in range(x_size * y_size):
-        #random_data.append((random.randint(0,255), random.randint(0,255), random.randint(0,255)))
-        data = get_random_byte()
-        random_data.append((data, data, data))
+    values = [random.randint(0,255) for i in range(num_bytes)]
+    return values
 
-    im.putdata(random_data)
-    im.show()
-    # im.save(filename)
-    
+
+#-------------------------------------------------------------------
+# gen_image()
+#
+# Generates an image based on the given arguments.
+#-------------------------------------------------------------------
+def gen_image(args):
+    verbose = args.verbose
+
+    if verbose:
+        if args.infile:
+            print "Will be generating an image based on the file %s" % ags.infile
+        else:
+            print "Will generate an image based on values from the Python random number generator."
+
+    if args.infile:
+        my_values = load_file(args.infile, verbose)
+    else:
+        my_values = gen_random_bytes(GEN_X * GEN_Y, verbose)
+
+    dimension = int(math.sqrt(len(my_values)))
+
+    if verbose:
+        print "The generated image will have the dimension %d x %d pixels." % (dimension, dimension)
+
+    # Create the actual image.
+    my_pixels = [(data, data, data) for data in my_values]
+    im = Image.new("RGB", (dimension, dimension))
+    im.putdata(my_pixels)
+
+    if args.show:
+        im.show()
+
 
 #-------------------------------------------------------------------
 # main()
@@ -110,10 +131,10 @@ def main():
     args = parser.parse_args()
 
     if args.infile==None and not args.test:
-        print "bajs!"
+        print "Error: No input file given and not in test mode."
+        exit(1)
 
-    print args
-    exit(1)
+    gen_image(args)
 
     
 #-------------------------------------------------------------------
