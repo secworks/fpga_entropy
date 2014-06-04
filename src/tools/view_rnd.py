@@ -49,6 +49,11 @@ import argparse
 
 
 #-------------------------------------------------------------------
+#-------------------------------------------------------------------
+VERSION = '0.001 Beta'
+
+
+#-------------------------------------------------------------------
 # get_random_byte()
 #
 # Generate a random byte. Used for testing only.
@@ -58,14 +63,8 @@ def get_random_byte():
 
 
 #-------------------------------------------------------------------
-# main()
 #-------------------------------------------------------------------
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--foo', help='foo help')
-    args = parser.parse_args()
-    exit(0)
-
+def old_stuff():
     verbose = True
     filename = "random_image.png"
     if verbose:
@@ -84,6 +83,37 @@ def main():
     im.putdata(random_data)
     im.show()
     # im.save(filename)
+    
+
+#-------------------------------------------------------------------
+# main()
+#-------------------------------------------------------------------
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i', '--infile',
+                        help='The file with random values used to generate the image.')
+
+    parser.add_argument('-o', '--outfile',
+                        help='The file the generated image will be written to. If no name is given infile.png will be used.')
+
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help='Enable verbose processing.')
+
+    parser.add_argument('-t', '--test', action='store_true',
+                        help='Perform test generation using the Python random generator.')
+
+    parser.add_argument('-s', '--show', action='store_true',
+                        help='Show the image generated.')
+
+    parser.add_argument('--version', action='version', version=VERSION)
+
+    args = parser.parse_args()
+
+    if args.infile==None and not args.test:
+        print "bajs!"
+
+    print args
+    exit(1)
 
     
 #-------------------------------------------------------------------
