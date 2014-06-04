@@ -7,6 +7,8 @@
 # Accepts a file with random data (bytes) and generates a picture
 # with the pixels representing the contents of the file.
 #
+# Note: This program requires the Python Imaging Library (PIL).
+#
 #
 # Author: Joachim Strombergson
 # Copyright (c) 2014, Secworks Sweden AB
@@ -43,15 +45,20 @@
 #-------------------------------------------------------------------
 from PIL import Image
 import random
+import argparse
 
 
+#-------------------------------------------------------------------
+# get_random_byte()
+#
+# Generate a random byte. Used for testing only.
+#-------------------------------------------------------------------
 def get_random_byte():
     return random.randint(0,255)
 
 
 #-------------------------------------------------------------------
 # main()
-#
 #-------------------------------------------------------------------
 def main():
     verbose = True
