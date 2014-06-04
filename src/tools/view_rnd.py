@@ -123,12 +123,11 @@ def gen_image(args):
 
     if args.show:
        im.show()
-
-    # Save the image
-    if args.outfile:
-        im.save(args.outfile+'.png', 'png')
     else:
-        im.save(args.infile+'.png', 'png')
+        if args.outfile:
+            im.save(args.outfile+'.png', 'png')
+        else:
+            im.save(args.infile+'.png', 'png')
 
 
 #-------------------------------------------------------------------
@@ -140,7 +139,7 @@ def main():
                         help='The file with random values used to generate the image.')
 
     parser.add_argument('-o', '--outfile',
-                        help='The file the generated image will be written to. If no name is given infile.png will be used.')
+                        help='The file the generated image will be written to. If no name is given INFILE.png will be used.')
 
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='Enable verbose processing.')
@@ -149,7 +148,7 @@ def main():
                         help='Perform test generation using the Python random generator.')
 
     parser.add_argument('-s', '--show', action='store_true',
-                        help='Show the image generated.')
+                        help='Show the image generated instead of saving it.')
 
     parser.add_argument('--version', action='version', version=VERSION)
 
