@@ -61,6 +61,11 @@ def get_random_byte():
 # main()
 #-------------------------------------------------------------------
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--foo', help='foo help')
+    args = parser.parse_args()
+    exit(0)
+
     verbose = True
     filename = "random_image.png"
     if verbose:
