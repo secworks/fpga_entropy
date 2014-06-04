@@ -74,6 +74,23 @@ def gen_random_bytes(num_bytes, verbose):
 
 
 #-------------------------------------------------------------------
+# load_file()
+#
+# Load the contents of a file with the given filename and
+# convert the contents to a list of values.
+#-------------------------------------------------------------------
+def load_file(filename, verbose):
+    if verbose:
+        print "Trying to read data from the file %s" % filename
+
+    with open(filename, 'rb') as my_file:
+        file_data = my_file.read()
+
+    values = [ord(i) for i in list(file_data)]
+    return values
+
+
+#-------------------------------------------------------------------
 # gen_image()
 #
 # Generates an image based on the given arguments.
@@ -83,10 +100,11 @@ def gen_image(args):
 
     if verbose:
         if args.infile:
-            print "Will be generating an image based on the file %s" % ags.infile
+            print "Will be generating an image based on the file %s" % args.infile
         else:
             print "Will generate an image based on values from the Python random number generator."
 
+    # Either load data or generate data.
     if args.infile:
         my_values = load_file(args.infile, verbose)
     else:
@@ -97,13 +115,23 @@ def gen_image(args):
     if verbose:
         print "The generated image will have the dimension %d x %d pixels." % (dimension, dimension)
 
-    # Create the actual image.
-    my_pixels = [(data, data, data) for data in my_values]
+    # Create the actual image. Note that we truncate to get an exakt size
+    my_pixels = []
+    for i in range((dimension * dimension)):
+        data = my_values[i]
+        my_pixels.append((my_values[i], my_values[i], my_values[i]))
+
     im = Image.new("RGB", (dimension, dimension))
     im.putdata(my_pixels)
 
     if args.show:
-        im.show()
+       im.show()
+
+    # Save the image
+    if args.outfile:
+        im.save(args.outfile+'.png', 'png')
+    else:
+        im.save(args.infile+'png', 'png')
 
 
 #-------------------------------------------------------------------
