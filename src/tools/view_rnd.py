@@ -116,10 +116,7 @@ def gen_image(args):
         print "The generated image will have the dimension %d x %d pixels." % (dimension, dimension)
 
     # Create the actual image. Note that we truncate to get an exakt size
-    my_pixels = []
-    for i in range((dimension * dimension)):
-        data = my_values[i]
-        my_pixels.append((my_values[i], my_values[i], my_values[i]))
+    my_pixels = [(my_values[i], my_values[i], my_values[i]) for i in range(dimension * dimension)]
 
     im = Image.new("RGB", (dimension, dimension))
     im.putdata(my_pixels)
