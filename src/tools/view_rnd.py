@@ -131,7 +131,7 @@ def gen_image(args):
     if args.outfile:
         im.save(args.outfile+'.png', 'png')
     else:
-        im.save(args.infile+'png', 'png')
+        im.save(args.infile+'.png', 'png')
 
 
 #-------------------------------------------------------------------
