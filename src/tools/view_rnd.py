@@ -129,14 +129,21 @@ def gen_image(args):
         my_values = load_file(args.infile, verbose)
     else:
         if args.crap:
-            my_values = gen_crappy_random_bytes(GEN_DIM * GEN_DIM, verbose)
+            if args.dimension:
+                my_values = gen_crappy_random_bytes(args.dimension * args.dimension, verbose)
+            else:
+                my_values = gen_crappy_random_bytes(GEN_DIM * GEN_DIM, verbose)
         else:
-            my_values = gen_random_bytes(GEN_DIM * GEN_DIM, verbose)
+            if args.dimension:
+                my_values = gen_random_bytes(args.dimension * args.dimension, verbose)
+            else:
+                my_values = gen_random_bytes(GEN_DIM * GEN_DIM, verbose)
+
 
     dimension = int(math.sqrt(len(my_values)))
-
     if verbose:
         print "The generated image will have the dimension %d x %d pixels." % (dimension, dimension)
+
 
     # Create the actual image. Note that we truncate to get an exakt size
     my_pixels = [(my_values[i], my_values[i], my_values[i]) for i in range(dimension * dimension)]
@@ -172,6 +179,9 @@ def main():
 
     parser.add_argument('-c', '--crap', action='store_true',
                         help='Perform test generation using the crappy random generator.')
+
+    parser.add_argument('-d', '--dimension', type=int,
+                        help='Give the dimension of the generated image. Default 1024 pixels.')
 
     parser.add_argument('-s', '--show', action='store_true',
                         help='Show the image generated instead of saving it.')
