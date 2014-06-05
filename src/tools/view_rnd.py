@@ -165,6 +165,9 @@ def gen_image(args):
 
 #-------------------------------------------------------------------
 # main()
+#
+# Create argparser, parse arguments and exit when no
+# real operations is specified.
 #-------------------------------------------------------------------
 def main():
     parser = argparse.ArgumentParser()
