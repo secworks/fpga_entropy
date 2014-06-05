@@ -53,8 +53,30 @@ import argparse
 # Symbolic constants.
 #-------------------------------------------------------------------
 VERSION = '0.001 Beta'
-GEN_X = 1024
-GEN_Y = 1024
+GEN_DIM = 1024
+
+
+#-------------------------------------------------------------------
+# gen_crappy_random_bytes()
+#
+# Generator of crappy random values. Used to test the
+# image generator to show how what bad random values
+# will look like.
+#
+# The actual generator is the Linear Congruential generator from
+# Numerical Recipies in C.
+#-------------------------------------------------------------------
+def gen_crappy_random_bytes(num_bytes, verbose):
+    if verbose:
+        print "Generating %d crappy random values." % num_bytes
+
+    values =  []
+    INT32MAX = (2**32 - 1)
+    state = random.randint(0, INT32MAX)
+    for i in range(num_bytes):
+        state = (state * 1664525 + 1013904223) % INT32MAX
+        values.append(state & 0xff)
+    return values
 
 
 #-------------------------------------------------------------------
@@ -64,8 +86,6 @@ GEN_Y = 1024
 # Used for testing only.
 #-------------------------------------------------------------------
 def gen_random_bytes(num_bytes, verbose):
-    values = []
-
     if verbose:
         print "Generating %d random values." % num_bytes
 
@@ -108,7 +128,10 @@ def gen_image(args):
     if args.infile:
         my_values = load_file(args.infile, verbose)
     else:
-        my_values = gen_random_bytes(GEN_X * GEN_Y, verbose)
+        if args.crap:
+            my_values = gen_crappy_random_bytes(GEN_DIM * GEN_DIM, verbose)
+        else:
+            my_values = gen_random_bytes(GEN_DIM * GEN_DIM, verbose)
 
     dimension = int(math.sqrt(len(my_values)))
 
@@ -146,6 +169,9 @@ def main():
 
     parser.add_argument('-t', '--test', action='store_true',
                         help='Perform test generation using the Python random generator.')
+
+    parser.add_argument('-c', '--crap', action='store_true',
+                        help='Perform test generation using the crappy random generator.')
 
     parser.add_argument('-s', '--show', action='store_true',
                         help='Show the image generated instead of saving it.')
