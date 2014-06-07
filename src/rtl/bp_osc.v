@@ -74,7 +74,7 @@ module bp_osc #(parameter WIDTH = 8)
        begin
          if (!reset_n)
            begin
-             dout <= 1'b0;
+             dout_reg <= 1'b0;
            end
          else
            begin
