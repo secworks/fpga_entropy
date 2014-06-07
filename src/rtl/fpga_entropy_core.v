@@ -113,7 +113,7 @@ module fpga_entropy_core(
                              .dout(dout41)
                             );
 
-  bp_osc #(.WIDTH(43) osc43(.clk(clk),
+  bp_osc #(.WIDTH(43)) osc43(.clk(clk),
                             .reset_n(reset_n),
                             .opa({opa[10 : 0], opa[31 : 0]}), 
                             .opb({opb[10 : 0], opb[31 : 0]}),
