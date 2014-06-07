@@ -39,13 +39,13 @@
 
 module bp_osc #(parameter WIDTH = 8)
              (
-              input wire               clk,
-              input wire               reset_n,
+              input wire                   clk,
+              input wire                   reset_n,
 
-              input wire [WIDTH - 1 0] opa,
-              input wire [WIDTH - 1 0] opb,
+              input wire [(WIDTH - 1) : 0] opa,
+              input wire [(WIDTH - 1) : 0] opb,
 
-              output wire              dout
+              output wire                  dout
              );
 
   //----------------------------------------------------------------
