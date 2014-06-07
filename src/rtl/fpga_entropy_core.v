@@ -71,8 +71,7 @@ module fpga_entropy_core(
   //----------------------------------------------------------------
   // Concurrent connectivity for ports etc.
   //----------------------------------------------------------------
-  assign rnd            = rnd_reg;
-  assign inv_init_value = ~init_value;
+  assign rnd = rnd_reg;
   
              
   //----------------------------------------------------------------
