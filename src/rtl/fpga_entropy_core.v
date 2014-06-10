@@ -53,14 +53,16 @@ module fpga_entropy_core(
   // Registers including update variables and write enable.
   //----------------------------------------------------------------
   reg [31 : 0] shift_reg;
+  reg          shift_we;
   reg [31 : 0] rnd_reg;
   reg [4 : 0]  bit_ctr_reg;
+  reg          rnd_ctr_reg;
 
-  reg          bit_reg;
+  reg          bit0_reg;
+  reg          bit1_reg;
   reg          bit_new;
-  reg          bit_we;
-
   
+
   //----------------------------------------------------------------
   // Wires.
   //----------------------------------------------------------------
@@ -138,15 +140,28 @@ module fpga_entropy_core(
           shift_reg   <= 32'h00000000;
           rnd_reg     <= 32'h00000000;
           bit_ctr_reg <= 5'h00;
-          bit_reg     <= 1'b0;
+          rnd_ctr_reg <= 1'b0;
+          bit_reg0    <= 1'b0;
+          bit_reg1    <= 1'b0;
         end
       else
         begin
-          if (bit_we)
+          rnd_ctr_reg <= ~rnd_ctr_reg;
+
+          if (rnd_ctr_reg)
             begin
-              shift_reg   <= {shift_reg[30 : 0], bit_new};
+              bit0_reg <= bit_new;
+            end
+
+          if (!rnd_ctr_reg)
+            begin
+              bit1_reg <= bit_new;
+            end
+
+          if (shift_we)
+            begin
+              shift_reg   <= {shift_reg[30 : 0], bit0_reg};
               bit_ctr_reg <= bit_ctr_reg + 1'b1;
-              bit_reg     <= bit_new;
             end
           
           if (bit_ctr_reg == 5'h1f)
@@ -165,13 +180,12 @@ module fpga_entropy_core(
   //----------------------------------------------------------------
   always @*
     begin : rnd_gen
-      bit_new  = 0;
-      bit_we   = 0;
+      shift_we = 1'b0;
+      bit_new  = dout02 ^ dout03 ^ dout07 ^ dout13 ^ dout41 ^ dout43;
 
-      if (update)
+      if (update && rnd_ctr_reg)
         begin
-          bit_new = dout02 ^ dout03 ^ dout07 ^ dout13 ^ dout41 ^ dout43;
-          bit_we = bit_new ^ bit_reg;
+          shift_we = bit0_reg ^ bit1_reg;
         end
     end
 
