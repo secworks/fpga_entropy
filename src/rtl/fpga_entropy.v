@@ -110,8 +110,9 @@ module fpga_entropy(
   //----------------------------------------------------------------
   // Concurrent connectivity for ports etc.
   //----------------------------------------------------------------
-  assign error = tmp_error;
-  assign debug = debug_reg;
+  assign read_data = tmp_read_data;
+  assign error     = tmp_error;
+  assign debug     = debug_reg;
   
 
   //----------------------------------------------------------------
@@ -157,12 +158,12 @@ module fpga_entropy(
 
           if (update_we)
             begin
-              update_reg <= update_we;
+              update_reg <= update_new;
             end
 
           if (debug_we)
             begin
-              debug_reg <= core_rnd;
+              debug_reg <= core_rnd[7 : 0];
             end
         end
     end // reg_update
@@ -199,11 +200,12 @@ module fpga_entropy(
   always @*
     begin: api
       // Default assignments.
-      opa_new    = 32'h00000000;
-      opa_we     = 0;
-      update_new = 0;
-      update_we  = 0;
-      tmp_error  = 0;
+      opa_new       = 32'h00000000;
+      opa_we        = 0;
+      update_new    = 0;
+      update_we     = 0;
+      tmp_read_data = 32'h00000000;
+      tmp_error     = 0;
       
       if (cs)
         begin
