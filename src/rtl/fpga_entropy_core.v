@@ -141,8 +141,8 @@ module fpga_entropy_core(
           rnd_reg     <= 32'h00000000;
           bit_ctr_reg <= 5'h00;
           rnd_ctr_reg <= 1'b0;
-          bit_reg0    <= 1'b0;
-          bit_reg1    <= 1'b0;
+          bit0_reg    <= 1'b0;
+          bit1_reg    <= 1'b0;
         end
       else
         begin
