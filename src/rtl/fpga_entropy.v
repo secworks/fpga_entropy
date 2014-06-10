@@ -77,7 +77,8 @@ module fpga_entropy(
   // Delay in cycles between updating the debug port with
   // a new random value sampled from the rng core port.
   // Corresponds to about 1/20s with a clock @ 50 MHz.
-  parameter DELAY_MAX = 32'h002625a0
+  parameter DELAY_MAX = 32'h002625a0;
+
   
   //----------------------------------------------------------------
   // Registers including update variables and write enable.
