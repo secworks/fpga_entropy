@@ -56,6 +56,10 @@ module fpga_entropy_core(
   reg [31 : 0] rnd_reg;
   reg [4 : 0]  bit_ctr_reg;
 
+  reg          bit_reg;
+  reg          bit_new;
+  reg          bit_we;
+
   
   //----------------------------------------------------------------
   // Wires.
@@ -134,13 +138,15 @@ module fpga_entropy_core(
           shift_reg   <= 32'h00000000;
           rnd_reg     <= 32'h00000000;
           bit_ctr_reg <= 5'h00;
+          bit_reg     <= 1'b0;
         end
       else
         begin
-          if (update)
+          if (bit_we)
             begin
-              shift_reg   <= {shift_reg[30 : 0], dout02 ^ dout03 ^ dout07 ^ dout13 ^ dout41 ^ dout43};
+              shift_reg   <= {shift_reg[30 : 0], bit_new};
               bit_ctr_reg <= bit_ctr_reg + 1'b1;
+              bit_reg     <= bit_new;
             end
           
           if (bit_ctr_reg == 5'h1f)
@@ -149,7 +155,26 @@ module fpga_entropy_core(
             end
         end
     end // reg_update
-  
+
+
+  //----------------------------------------------------------------
+  // rnd_gen
+  //
+  // Logic that implements the actual random bit value generator
+  // Note: This logic also performs von Neumann decorrelation.
+  //----------------------------------------------------------------
+  always @*
+    begin : rnd_gen
+      bit_new  = 0;
+      bit_we   = 0;
+
+      if (update)
+        begin
+          bit_new = dout02 ^ dout03 ^ dout07 ^ dout13 ^ dout41 ^ dout43;
+          bit_we = bit_new ^ bit_reg;
+        end
+    end
+
 endmodule // fpga_entropy_core
 
 //======================================================================
