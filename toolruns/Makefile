@@ -35,7 +35,7 @@
 #
 #===================================================================
 
-FPGA_ENTROPY_SRC=../src/rtl/inv1.v ../src/rtl/loop5.v ../src/rtl/loop7.v ../src/rtl/loop13.v ../src/rtl/loop41.v ../src/rtl/loop43.v ../src/rtl/fpga_entropy_core.v
+FPGA_ENTROPY_SRC=../src/rtl/bp_osc.v ../src/rtl/fpga_entropy_core.v
 TB_FPGA_ENTROPY_SRC=../src/tb/tb_fpga_entropy_core.v
 TB_FPGA_ENTROPY_TARGET = fpga_entropy.sim
 
