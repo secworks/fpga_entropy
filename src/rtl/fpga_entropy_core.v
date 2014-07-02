@@ -66,12 +66,9 @@ module fpga_entropy_core(
   //----------------------------------------------------------------
   // Wires.
   //----------------------------------------------------------------
-  wire dout02;
-  wire dout03;
-  wire dout07;
-  wire dout13;
-  wire dout41;
-  wire dout43;
+  wire [7 : 0] dout01;
+  wire [7 : 0] dout02;
+  wire [7 : 0] dout03;
 
   
   //----------------------------------------------------------------
@@ -83,47 +80,31 @@ module fpga_entropy_core(
   //----------------------------------------------------------------
   // module instantiations.
   //----------------------------------------------------------------
-  bp_osc #(.WIDTH(2)) osc02(.clk(clk),
-                            .reset_n(reset_n),
-                            .opa(opa[1 : 0]),
-                            .opb(opb[1 : 0]),
-                            .dout(dout02)
-                           );
+  genvar i;
+  generate
+    for(i = 0 ; i < 8 ; i = i + 1) begin: oscillators
+      bp_osc #(.WIDTH(1)) osc01(.clk(clk),
+                                .reset_n(reset_n),
+                                .opa(opa[0]),
+                                .opb(opb[0]),
+                                .dout(dout01[i])
+                               );
 
-  bp_osc #(.WIDTH(3)) osc03(.clk(clk),
-                            .reset_n(reset_n),
-                            .opa(opa[2 : 0]),
-                            .opb(opb[2 : 0]),
-                            .dout(dout03)
-                           );
+      bp_osc #(.WIDTH(2)) osc02(.clk(clk),
+                                .reset_n(reset_n),
+                                .opa(opa[1 : 0]),
+                                .opb(opb[1 : 0]),
+                                .dout(dout02[i])
+                               );
 
-  bp_osc #(.WIDTH(7)) osc07(.clk(clk), 
-                            .reset_n(reset_n),
-                            .opa(opa[6 : 0]),
-                            .opb(opb[6 : 0]),
-                            .dout(dout07)
-                            );
-
-  bp_osc #(.WIDTH(13)) osc13(.clk(clk),
-                             .reset_n(reset_n),
-                             .opa(opa[12 : 0]),
-                             .opb(opb[12 : 0]),
-                             .dout(dout13)
-                            );
-
-  bp_osc #(.WIDTH(41)) osc41(.clk(clk),
-                             .reset_n(reset_n),
-                             .opa({opa[8 : 0], opa[31 : 0]}),
-                             .opb({opb[8 : 0], opb[31 : 0]}),
-                             .dout(dout41)
-                            );
-
-  bp_osc #(.WIDTH(43)) osc43(.clk(clk),
-                            .reset_n(reset_n),
-                            .opa({opa[10 : 0], opa[31 : 0]}), 
-                            .opb({opb[10 : 0], opb[31 : 0]}),
-                            .dout(dout43)
-                           );
+      bp_osc #(.WIDTH(3)) osc03(.clk(clk),
+                                .reset_n(reset_n),
+                                .opa(opa[2 : 0]),
+                                .opb(opb[2 : 0]),
+                                .dout(dout03[i])
+                               );
+    end
+  endgenerate
   
   
   //----------------------------------------------------------------
@@ -146,21 +127,9 @@ module fpga_entropy_core(
         end
       else
         begin
-          rnd_ctr_reg <= ~rnd_ctr_reg;
-
-          if (rnd_ctr_reg)
+          if (update)
             begin
-              bit0_reg <= bit_new;
-            end
-
-          if (!rnd_ctr_reg)
-            begin
-              bit1_reg <= bit_new;
-            end
-
-          if (shift_we)
-            begin
-              shift_reg   <= {shift_reg[30 : 0], bit0_reg};
+              shift_reg   <= {shift_reg[30 : 0], bit_new};
               bit_ctr_reg <= bit_ctr_reg + 1'b1;
             end
           
@@ -176,19 +145,20 @@ module fpga_entropy_core(
   // rnd_gen
   //
   // Logic that implements the actual random bit value generator
-  // Note: This logic also performs von Neumann decorrelation.
+  // by mixing the oscillator outputs.
   //----------------------------------------------------------------
   always @*
     begin : rnd_gen
-      shift_we = 1'b0;
-      bit_new  = dout02 ^ dout03 ^ dout07 ^ dout13 ^ dout41 ^ dout43;
+      reg osc1_mix;
+      reg osc2_mix;
+      reg osc3_mix;
 
-      if (update && rnd_ctr_reg)
-        begin
-          shift_we = bit0_reg ^ bit1_reg;
-        end
+      osc1_mix = ^dout02;
+      osc2_mix = ^dout03;
+      osc3_mix = ^dout03;
+
+      bit_new = osc1_mix ^ osc2_mix ^ osc3_mix;
     end
-
 endmodule // fpga_entropy_core
 
 //======================================================================
