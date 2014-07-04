@@ -56,16 +56,13 @@ module fpga_entropy_core(
   reg          shift_we;
   reg [31 : 0] rnd_reg;
   reg [4 : 0]  bit_ctr_reg;
-  reg          rnd_ctr_reg;
-
-  reg          bit0_reg;
-  reg          bit1_reg;
-  reg          bit_new;
   
 
   //----------------------------------------------------------------
   // Wires.
   //----------------------------------------------------------------
+  reg          bit_new;
+
   wire [7 : 0] dout01;
   wire [7 : 0] dout02;
   wire [7 : 0] dout03;
@@ -121,9 +118,6 @@ module fpga_entropy_core(
           shift_reg   <= 32'h00000000;
           rnd_reg     <= 32'h00000000;
           bit_ctr_reg <= 5'h00;
-          rnd_ctr_reg <= 1'b0;
-          bit0_reg    <= 1'b0;
-          bit1_reg    <= 1'b0;
         end
       else
         begin
@@ -153,8 +147,8 @@ module fpga_entropy_core(
       reg osc2_mix;
       reg osc3_mix;
 
-      osc1_mix = ^dout02;
-      osc2_mix = ^dout03;
+      osc1_mix = ^dout01;
+      osc2_mix = ^dout02;
       osc3_mix = ^dout03;
 
       bit_new = osc1_mix ^ osc2_mix ^ osc3_mix;
