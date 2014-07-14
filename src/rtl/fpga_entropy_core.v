@@ -109,7 +109,7 @@ module fpga_entropy_core(
   //
   // Update functionality for all registers in the core.
   // All registers are positive edge triggered with synchronous
-  // active low reset. All registers have write enable.
+  // active low reset.
   //----------------------------------------------------------------
   always @ (posedge clk)
     begin
