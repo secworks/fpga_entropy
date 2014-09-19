@@ -70,7 +70,7 @@ module bp_osc #(parameter WIDTH = 8)
   //----------------------------------------------------------------
   // reg_update
   //----------------------------------------------------------------
-     always @ (posedge clk)
+     always @ (posedge clk or negedge reset_n)
        begin
          if (!reset_n)
            begin
